@@ -46,10 +46,11 @@ def _mediapipe_install_hint() -> str:
     return (
         "MediaPipe FaceMesh is unavailable. On Linux this is usually a "
         "mediapipe/protobuf compatibility issue. Reinstall with:\n"
-        "  pip uninstall -y mediapipe protobuf\n"
-        "  pip install 'protobuf>=4.25.3,<5' 'mediapipe==0.10.9'\n"
+        "  python -m pip uninstall -y mediapipe protobuf\n"
+        "  python -m pip install 'protobuf==3.20.3' 'mediapipe==0.10.9'\n"
         "Then verify with:\n"
-        "  python -c \"import mediapipe as mp; print(mp.__version__); "
+        "  python -c \"import sys, mediapipe as mp; print(sys.executable); "
+        "print(mp.__version__); "
         "print(hasattr(mp, 'solutions')); "
         "from mediapipe.python.solutions.face_mesh import FaceMesh; print('ok')\""
     )
