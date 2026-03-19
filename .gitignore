@@ -1,0 +1,18 @@
+# Bytecode
+__pycache__/
+*.pyc
+
+# Environments
+.venv/
+env/
+
+# Data and artifacts
+data/
+checkpoints/
+lm/
+runs/
+submission*.csv
+
+# OS/editor
+.DS_Store
+Thumbs.db

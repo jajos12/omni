@@ -1,0 +1,14 @@
+model:
+  encoder_layers: 12
+  gradient_checkpointing: true
+
+data:
+  num_workers: 2
+
+training:
+  batch_per_gpu: 2
+  validation_batch_size: 2
+  validation_max_batches: 25
+
+inference:
+  batch_size: 2

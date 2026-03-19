@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "omni-vsr"
+version = "0.1.0"
+description = "Modular visual speech recognition pipeline for OmniSub2026."
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [
+  { name = "Codex + LOQ" }
+]
+dependencies = [
+  "numpy>=1.26",
+  "pandas>=2.2",
+  "PyYAML>=6.0",
+  "tqdm>=4.66",
+  "einops>=0.7",
+]
+
+[project.scripts]
+omni-preprocess = "omni_vsr.cli.preprocess:main"
+omni-train = "omni_vsr.cli.train:main"
+omni-predict = "omni_vsr.cli.predict:main"
+omni-submit-kaggle = "omni_vsr.cli.submit_kaggle:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]

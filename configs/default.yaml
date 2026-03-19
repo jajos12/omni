@@ -1,0 +1,79 @@
+project:
+  root_dir: .
+  data_dir: data
+  roi_dir: data/rois
+  checkpoint_dir: checkpoints/finetuned
+  pretrained_checkpoint: checkpoints/pretrained/model_vsr_lrs3vox_base_s3fd.pth
+  sample_submission: sample_submission.csv
+  lm_dir: lm
+  lm_path: lm/librispeech_4gram.bin
+  run_dir: runs
+
+data:
+  train_split: train
+  test_split: test
+  target_size: 96
+  max_frames: 400
+  min_frames: 2
+  val_fraction: 0.05
+  num_workers: 4
+  persistent_workers: true
+  pin_memory: true
+  train_flip_prob: 0.5
+  temporal_mask_prob: 0.8
+  spatial_cutout_prob: 0.5
+  speed_perturb_prob: 0.5
+
+model:
+  d_model: 256
+  encoder_layers: 18
+  decoder_layers: 6
+  encoder_heads: 4
+  decoder_heads: 4
+  ff_expand: 4
+  decoder_ff_dim: 2048
+  conv_kernel: 31
+  dropout: 0.1
+  inter_ctc_every: 4
+  gradient_checkpointing: false
+
+loss:
+  ctc_weight: 0.3
+  inter_ctc_weight: 0.1
+  label_smoothing: 0.1
+
+training:
+  seed: 42
+  epochs: 25
+  batch_per_gpu: 16
+  validation_batch_size: 4
+  validation_max_batches: 50
+  grad_clip: 5.0
+  warmup_steps: 2000
+  lr_frontend: 1.0e-5
+  lr_encoder: 1.0e-4
+  lr_decoder: 3.0e-4
+  layer_decay: 0.8
+  min_lr_factor: 0.05
+  weight_decay: 0.01
+  adam_betas: [0.9, 0.98]
+  adam_eps: 1.0e-9
+  save_every: 5
+  log_every: 50
+  use_amp: true
+  backend: auto
+  resume_checkpoint: null
+
+inference:
+  alpha: 0.6
+  beta: 0.4
+  beam_width: 80
+  batch_size: 8
+  decode_workers: 4
+  device: cuda
+  use_tta: false
+  save_failures_path: runs/inference_failures.json
+  live_preprocess_fallback: true
+
+kaggle:
+  competition: ""

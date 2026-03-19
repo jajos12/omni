@@ -1,0 +1,27 @@
+name: omni-vsr
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+dependencies:
+  - python=3.10
+  - pip
+  - numpy=1.26
+  - pandas=2.2
+  - pyyaml=6.0
+  - tqdm=4.66
+  - einops=0.7
+  - opencv=4.9
+  - ffmpeg
+  - pytorch=2.2
+  - torchvision=0.17
+  - torchaudio=2.2
+  - pytorch-cuda=12.1
+  - pip:
+      - mediapipe==0.10.9
+      - pyctcdecode==0.5.0
+      - kenlm==0.2.0
+      - editdistance==0.8.1
+      - kaggle==1.7.4.5
+      - g2p-en==2.1.0
+      - -e .
