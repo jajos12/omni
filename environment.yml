@@ -4,25 +4,25 @@ channels:
   - nvidia
   - conda-forge
 dependencies:
-  - python
+  - python=3.10
   - pip
-  - numpy
-  - pandas
-  - pyyaml
-  - protobuf>
-  - tqdm
-  - einops
-  - opencv
+  - numpy=1.26
+  - pandas=2.2
+  - pyyaml=6.0
+  - protobuf=3.20.3
+  - tqdm=4.66
+  - einops=0.7
+  - opencv=4.9
   - ffmpeg
-  - pytorch
-  - torchvision
-  - torchaudio
-  - pytorch-cuda
+  - pytorch=2.2
+  - torchvision=0.17
+  - torchaudio=2.2
+  - pytorch-cuda=12.1
   - pip:
-      - mediapipe
-      - pyctcdecode
-      - kenlm
-      - editdistance
-      - kaggle
-      - g2p-en
+      - mediapipe==0.10.9
+      - pyctcdecode==0.5.0
+      - kenlm==0.2.0
+      - editdistance==0.8.1
+      - kaggle==1.7.4.5
+      - g2p-en==2.1.0
       - -e .
