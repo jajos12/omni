@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import math
+import os
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
@@ -13,7 +14,7 @@ from tqdm import tqdm
 
 try:
     import mediapipe as mp
-except ImportError as exc:  # pragma: no cover
+except Exception as exc:  # pragma: no cover
     mp = None
     _MEDIAPIPE_IMPORT_ERROR = exc
 else:
@@ -41,14 +42,55 @@ class PreprocessStats:
     skipped: int = 0
 
 
+def _mediapipe_install_hint() -> str:
+    return (
+        "MediaPipe FaceMesh is unavailable. On Linux this is usually a "
+        "mediapipe/protobuf compatibility issue. Reinstall with:\n"
+        "  pip uninstall -y mediapipe protobuf\n"
+        "  pip install 'protobuf>=4.25.3,<5' 'mediapipe==0.10.9'\n"
+        "Then verify with:\n"
+        "  python -c \"import mediapipe as mp; print(mp.__version__); "
+        "print(hasattr(mp, 'solutions')); "
+        "from mediapipe.python.solutions.face_mesh import FaceMesh; print('ok')\""
+    )
+
+
+def _resolve_face_mesh_class():
+    if mp is None:  # pragma: no cover
+        raise ImportError(_mediapipe_install_hint()) from _MEDIAPIPE_IMPORT_ERROR
+
+    solutions = getattr(mp, "solutions", None)
+    if solutions is not None and hasattr(solutions, "face_mesh"):
+        return solutions.face_mesh.FaceMesh
+
+    import_errors: list[Exception] = []
+
+    try:
+        from mediapipe.python.solutions.face_mesh import FaceMesh
+
+        return FaceMesh
+    except Exception as exc:  # pragma: no cover
+        import_errors.append(exc)
+
+    try:
+        from mediapipe.python.solutions import face_mesh as face_mesh_module
+
+        return face_mesh_module.FaceMesh
+    except Exception as exc:  # pragma: no cover
+        import_errors.append(exc)
+
+    raise ImportError(
+        f"{_mediapipe_install_hint()}\n"
+        f"mediapipe module path: {getattr(mp, '__file__', '<unknown>')}\n"
+        f"last import error: {import_errors[-1] if import_errors else _MEDIAPIPE_IMPORT_ERROR}"
+    )
+
+
 class LipROIExtractor:
     """Extract stabilized grayscale lip crops from a video."""
 
     def __init__(self, target_size: int = 96, canvas_multiplier: int = 4) -> None:
-        if mp is None:  # pragma: no cover
-            raise ImportError(
-                "mediapipe is required for lip ROI extraction. Install the conda env first."
-            ) from _MEDIAPIPE_IMPORT_ERROR
+        face_mesh_class = _resolve_face_mesh_class()
 
         self.target_size = target_size
         self.canvas_multiplier = canvas_multiplier
@@ -59,7 +101,8 @@ class LipROIExtractor:
         )
         scale = target_size / 96.0
         self.canonical_eyes = REFERENCE_EYES * canvas_multiplier * scale
-        self.face_mesh = mp.solutions.face_mesh.FaceMesh(
+        os.environ.setdefault("TF_CPP_MIN_LOG_LEVEL", "2")
+        self.face_mesh = face_mesh_class(
             static_image_mode=False,
             max_num_faces=1,
             refine_landmarks=True,

@@ -44,3 +44,4 @@ src/
 
 - The guide assumes external assets such as the pretrained checkpoint, competition data, sample submission, and KenLM binaries.
 - `omni-submit-kaggle` is included so we can wire up Kaggle submissions as soon as you share the token and the competition slug.
+- On Linux, `mediapipe==0.10.9` can break if `protobuf` is upgraded too far by the base image. This repo pins `protobuf>=4.25.3,<5`; if preprocessing fails with `MessageFactory` or `mp.solutions` errors, reinstall `protobuf` and `mediapipe` inside the conda env.
